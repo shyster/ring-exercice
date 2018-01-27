@@ -27,7 +27,7 @@ import static org.apache.http.HttpStatus.SC_OK;
  * Created by Vladislav Kulasov on 27.01.2018.
  */
 public class CuriosityPhotos {
-    private Logger logger = Logger.getLogger("CuriosityPhotos");
+    private Logger logger = Logger.getLogger(this.getClass().getName());
 
     /**
      * return filtered photos

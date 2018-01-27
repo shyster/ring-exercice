@@ -26,7 +26,7 @@ public class TestsCuriosityPhotos {
     private static final int PHOTOS_LIMIT = 10;
     private static final String PHOTOS_SOL_DIR = "photos/sol";
     private static final String PHOTOS_EARTH_DATE_DIR = "photos/earthDate";
-    private Logger logger = Logger.getLogger("TestsCuriosityPhotos");
+    private Logger logger = Logger.getLogger(this.getClass().getName());
     private CuriosityPhotos curiosityPhotos = new CuriosityPhotos();
     private Photos photosSol;
 
