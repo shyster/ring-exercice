@@ -1,4 +1,4 @@
-package com.ring.exercice.core;
+package com.ring.exercice.helpers;
 
 /**
  * Created by Vladislav Kulasov on 27.01.2018.

@@ -1,8 +1,8 @@
 package com.ring.exercice.tests;
 
-import com.ring.exercice.core.CameraPhotosAmount;
+import com.ring.exercice.helpers.CameraPhotosAmount;
 import com.ring.exercice.core.CompareImages;
-import com.ring.exercice.core.RoverCameras;
+import com.ring.exercice.helpers.RoverCameras;
 import com.ring.exercice.curiosity.photos.Photo;
 import com.ring.exercice.curiosity.photos.Photos;
 import com.ring.exercice.helpers.CuriosityPhotos;

@@ -1,6 +1,5 @@
 package com.ring.exercice.helpers;
 
-import com.ring.exercice.core.RoverCameras;
 import com.ring.exercice.curiosity.photos.Photo;
 import com.ring.exercice.curiosity.photos.Photos;
 import org.apache.commons.io.FileUtils;
