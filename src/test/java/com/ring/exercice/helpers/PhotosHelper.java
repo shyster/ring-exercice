@@ -11,8 +11,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,7 +23,7 @@ import static org.apache.http.HttpStatus.SC_OK;
 /**
  * Created by Vladislav Kulasov on 27.01.2018.
  */
-public class CuriosityPhotos {
+public class PhotosHelper {
     private Logger logger = Logger.getLogger(this.getClass());
 
     /**
@@ -57,12 +55,6 @@ public class CuriosityPhotos {
                 .collect(Collectors.toList());
     }
 
-    public Date getEarthDateBySol(long sol) {
-        long earthDays = (long) (SOL_DAY * sol);
-        LocalDateTime ldt = LocalDateTime.parse(CURIOSITY_LANDING_DATE).plusDays(earthDays);
-        return Date.from(ldt.atZone(ZoneOffset.UTC).toInstant());
-    }
-
     public long getAmountPhotosByCameras(Photos photos, RoverCameras cameras) {
         List<Photo> filteredList = photos.getPhotos().stream()
                 .filter(s -> s.getCamera().getName().equals(cameras.name()))
@@ -70,7 +62,7 @@ public class CuriosityPhotos {
         return filteredList.stream().count();
     }
 
-    public Photos getPhotosFromNasa(String url) {
+    public Photos getMetadataPhotosFromNasa(String url) {
         logger.info(url);
         return given().get(url)
                 .then()
@@ -109,12 +101,14 @@ public class CuriosityPhotos {
         FileUtils.copyInputStreamToFile(inputStream, targetFile);
     }
 
-    public String getApiUrl(long solAmount) {
-        return String.format("%s?%s=%d&%s=%s", API_URL_CURIOSITY_PHOTOS, API_URL_SOL, solAmount, API_URL_KEY, API_USER_KEY);
+    public String getApiUrl(long solAmount, ReferenceRover rover) {
+        String url = String.format(API_URL_PHOTOS_TEMPLATE, rover.getName());
+        return String.format("%s?%s=%d&%s=%s", url, API_URL_SOL, solAmount, API_URL_KEY, API_USER_KEY);
     }
 
-    public String getApiUrl(Date date) {
-        return String.format("%s?%s=%TF&%s=%s", API_URL_CURIOSITY_PHOTOS, API_EARTH_DATE, date, API_URL_KEY, API_USER_KEY);
+    public String getApiUrl(Date date, ReferenceRover rover) {
+        String url = String.format(API_URL_PHOTOS_TEMPLATE, rover.getName());
+        return String.format("%s?%s=%TF&%s=%s", url, API_EARTH_DATE, date, API_URL_KEY, API_USER_KEY);
     }
 
     public String getNameFileFromUrl(String url) throws MalformedURLException {

@@ -1,11 +1,9 @@
 package com.ring.exercice.tests;
 
-import com.ring.exercice.helpers.CameraPhotosAmount;
+import com.ring.exercice.helpers.*;
 import com.ring.exercice.core.CompareImages;
-import com.ring.exercice.helpers.RoverCameras;
 import com.ring.exercice.curiosity.photos.Photo;
 import com.ring.exercice.curiosity.photos.Photos;
-import com.ring.exercice.helpers.CuriosityPhotos;
 import org.apache.log4j.Logger;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
@@ -26,27 +24,28 @@ public class TestsCuriosityPhotos {
 
     private static final long SOL = 1000;
     private static final int PHOTOS_LIMIT = 10;
+    private static final ReferenceRover rover = ReferenceRover.CURIOSITY;
     private static final String PHOTOS_SOL_DIR = DOWNLOAD_DIR + "photos/sol";
     private static final String PHOTOS_EARTH_DATE_DIR = DOWNLOAD_DIR + "photos/earthDate";
     private Logger logger = Logger.getLogger(this.getClass());
-    private CuriosityPhotos curiosityPhotos = new CuriosityPhotos();
+    private PhotosHelper photosHelper = new PhotosHelper();
     List<Photo> limitedPhotos, filteredPhotosEarthDate;
     private Photos photosSol;
 
     @BeforeClass
     public void getPhotosFromNasaApi() {
         //get photos information by sol
-        photosSol = curiosityPhotos.getPhotosFromNasa(curiosityPhotos.getApiUrl(SOL));
+        photosSol = photosHelper.getMetadataPhotosFromNasa(photosHelper.getApiUrl(SOL, rover));
         //get photos information by earth date
-        Photos photosEarthDate = curiosityPhotos.getPhotosFromNasa(curiosityPhotos.getApiUrl(curiosityPhotos.getEarthDateBySol(SOL)));
-        limitedPhotos = curiosityPhotos.getLimitedPhotos(photosSol, PHOTOS_LIMIT);
-        filteredPhotosEarthDate = curiosityPhotos.getFilteredPhotos(photosEarthDate, limitedPhotos);
+        Photos photosEarthDate = photosHelper.getMetadataPhotosFromNasa(photosHelper.getApiUrl(DatePlanetCalculator.getEarthDateBySol(SOL), rover));
+        limitedPhotos = photosHelper.getLimitedPhotos(photosSol, PHOTOS_LIMIT);
+        filteredPhotosEarthDate = photosHelper.getFilteredPhotos(photosEarthDate, limitedPhotos);
     }
 
     @Test
     public void testCompareHasaPhotos() {
-        curiosityPhotos.downloadPhotos(limitedPhotos, PHOTOS_SOL_DIR);
-        curiosityPhotos.downloadPhotos(filteredPhotosEarthDate, PHOTOS_EARTH_DATE_DIR);
+        photosHelper.downloadPhotos(limitedPhotos, PHOTOS_SOL_DIR);
+        photosHelper.downloadPhotos(filteredPhotosEarthDate, PHOTOS_EARTH_DATE_DIR);
         compareFilesPhotos(limitedPhotos, PHOTOS_SOL_DIR, PHOTOS_EARTH_DATE_DIR);
         Assert.assertEquals(filteredPhotosEarthDate, limitedPhotos, "Metadata is incorrect "); //validate metadata from API
     }
@@ -55,7 +54,7 @@ public class TestsCuriosityPhotos {
     public void testAddition() {
         List<CameraPhotosAmount> cameraPhotoAmounts = new ArrayList<>();
         for (RoverCameras cameras : RoverCameras.values()) {
-            long amountPhotos = curiosityPhotos.getAmountPhotosByCameras(photosSol, cameras);
+            long amountPhotos = photosHelper.getAmountPhotosByCameras(photosSol, cameras);
             logger.info(cameras.name() + "  " + amountPhotos);
             cameraPhotoAmounts.add(new CameraPhotosAmount(cameras, amountPhotos));
         }
@@ -77,7 +76,7 @@ public class TestsCuriosityPhotos {
         photos
                 .forEach(photo -> {
                     try {
-                        String fileName = curiosityPhotos.getNameFileFromUrl(photo.getImgSrc());
+                        String fileName = photosHelper.getNameFileFromUrl(photo.getImgSrc());
                         logger.info("Compare " + firstDir + "/" + fileName + " & " +
                                 secondDir + "/" + fileName);
                         Assert.assertEquals(CompareImages.processImage(
