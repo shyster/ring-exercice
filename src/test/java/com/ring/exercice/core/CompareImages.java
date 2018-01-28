@@ -7,6 +7,7 @@ import java.io.IOException;
 
 /**
  * Created by Vladislav Kulasov on 27.01.2018.
+ *
  * @see <a href="https://rosettacode.org/wiki/Percentage_difference_between_images"></a>
  */
 

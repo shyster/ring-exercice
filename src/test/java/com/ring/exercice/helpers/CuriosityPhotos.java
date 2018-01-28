@@ -30,7 +30,8 @@ public class CuriosityPhotos {
 
     /**
      * return filtered photos
-     * @param photos Photos
+     *
+     * @param photos       Photos
      * @param photosFilter List<Photo>
      * @return List<Photo> return filtered photos
      */

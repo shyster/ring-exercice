@@ -30,26 +30,29 @@ public class TestsCuriosityPhotos {
     private static final String PHOTOS_EARTH_DATE_DIR = DOWNLOAD_DIR + "photos/earthDate";
     private Logger logger = Logger.getLogger(this.getClass());
     private CuriosityPhotos curiosityPhotos = new CuriosityPhotos();
+    List<Photo> limitedPhotos, filteredPhotosEarthDate;
     private Photos photosSol;
 
     @BeforeClass
     public void getPhotosFromNasaApi() {
         //get photos information by sol
         photosSol = curiosityPhotos.getPhotosFromNasa(curiosityPhotos.getApiUrl(SOL));
+        //get photos information by earth date
+        Photos photosEarthDate = curiosityPhotos.getPhotosFromNasa(curiosityPhotos.getApiUrl(curiosityPhotos.getEarthDateBySol(SOL)));
+        limitedPhotos = curiosityPhotos.getLimitedPhotos(photosSol, PHOTOS_LIMIT);
+        filteredPhotosEarthDate = curiosityPhotos.getFilteredPhotos(photosEarthDate, limitedPhotos);
     }
 
     @Test
     public void testCompareHasaPhotos() {
-        //get photos information by earth date
-        Photos photosEarthDate = curiosityPhotos.getPhotosFromNasa(curiosityPhotos.getApiUrl(curiosityPhotos.getEarthDateBySol(SOL)));
-        List<Photo> limitedPhotos = curiosityPhotos.getLimitedPhotos(photosSol, PHOTOS_LIMIT);
-        List<Photo> filteredPhotosEarthDate = curiosityPhotos.getFilteredPhotos(photosEarthDate, limitedPhotos);
-
         curiosityPhotos.downloadPhotos(limitedPhotos, PHOTOS_SOL_DIR);
         curiosityPhotos.downloadPhotos(filteredPhotosEarthDate, PHOTOS_EARTH_DATE_DIR);
         compareFilesPhotos(limitedPhotos, PHOTOS_SOL_DIR, PHOTOS_EARTH_DATE_DIR);
+    }
 
-        Assert.assertEquals(filteredPhotosEarthDate ,limitedPhotos,  "Metadata is incorrect "); //validate metadata from API
+    @Test
+    public void testMetadataPhotos() {
+        Assert.assertEquals(filteredPhotosEarthDate, limitedPhotos, "Metadata is incorrect "); //validate metadata from API
     }
 
     @Test
@@ -81,9 +84,9 @@ public class TestsCuriosityPhotos {
                         String fileName = curiosityPhotos.getNameFileFromUrl(photo.getImgSrc());
                         logger.info("Compare " + firstDir + "/" + fileName + " & " +
                                 secondDir + "/" + fileName);
-                        Assert.assertEquals( CompareImages.processImage(
+                        Assert.assertEquals(CompareImages.processImage(
                                 firstDir + "/" + fileName,
-                                secondDir + "/" + fileName),0D, "File is different");
+                                secondDir + "/" + fileName), 0D, "Files " + fileName + " are different");
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
