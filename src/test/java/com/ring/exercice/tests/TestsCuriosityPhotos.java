@@ -48,10 +48,6 @@ public class TestsCuriosityPhotos {
         curiosityPhotos.downloadPhotos(limitedPhotos, PHOTOS_SOL_DIR);
         curiosityPhotos.downloadPhotos(filteredPhotosEarthDate, PHOTOS_EARTH_DATE_DIR);
         compareFilesPhotos(limitedPhotos, PHOTOS_SOL_DIR, PHOTOS_EARTH_DATE_DIR);
-    }
-
-    @Test
-    public void testMetadataPhotos() {
         Assert.assertEquals(filteredPhotosEarthDate, limitedPhotos, "Metadata is incorrect "); //validate metadata from API
     }
 
