@@ -26,8 +26,8 @@ public class TestsCuriosityPhotos {
 
     private static final long SOL = 1000;
     private static final int PHOTOS_LIMIT = 10;
-    private static final String PHOTOS_SOL_DIR = "photos/sol";
-    private static final String PHOTOS_EARTH_DATE_DIR = "photos/earthDate";
+    private static final String PHOTOS_SOL_DIR = DOWNLOAD_DIR + "photos/sol";
+    private static final String PHOTOS_EARTH_DATE_DIR = DOWNLOAD_DIR + "photos/earthDate";
     private Logger logger = Logger.getLogger(this.getClass());
     private CuriosityPhotos curiosityPhotos = new CuriosityPhotos();
     private Photos photosSol;
@@ -45,11 +45,11 @@ public class TestsCuriosityPhotos {
         List<Photo> limitedPhotos = curiosityPhotos.getLimitedPhotos(photosSol, PHOTOS_LIMIT);
         List<Photo> filteredPhotosEarthDate = curiosityPhotos.getFilteredPhotos(photosEarthDate, limitedPhotos);
 
-        curiosityPhotos.downloadPhotos(limitedPhotos, DOWNLOAD_DIR + PHOTOS_SOL_DIR);
-        curiosityPhotos.downloadPhotos(filteredPhotosEarthDate, DOWNLOAD_DIR + PHOTOS_EARTH_DATE_DIR);
-        compareFilesPhotos(limitedPhotos, DOWNLOAD_DIR + PHOTOS_SOL_DIR, DOWNLOAD_DIR + PHOTOS_EARTH_DATE_DIR);
+        curiosityPhotos.downloadPhotos(limitedPhotos, PHOTOS_SOL_DIR);
+        curiosityPhotos.downloadPhotos(filteredPhotosEarthDate, PHOTOS_EARTH_DATE_DIR);
+        compareFilesPhotos(limitedPhotos, PHOTOS_SOL_DIR, PHOTOS_EARTH_DATE_DIR);
 
-        Assert.assertEquals(limitedPhotos, filteredPhotosEarthDate, "Metadata is incorrect "); //validate metadata from API
+        Assert.assertEquals(filteredPhotosEarthDate ,limitedPhotos,  "Metadata is incorrect "); //validate metadata from API
     }
 
     @Test
@@ -81,9 +81,9 @@ public class TestsCuriosityPhotos {
                         String fileName = curiosityPhotos.getNameFileFromUrl(photo.getImgSrc());
                         logger.info("Compare " + firstDir + "/" + fileName + " & " +
                                 secondDir + "/" + fileName);
-                        Assert.assertEquals(0D, CompareImages.processImage(
+                        Assert.assertEquals( CompareImages.processImage(
                                 firstDir + "/" + fileName,
-                                secondDir + "/" + fileName), "File is different");
+                                secondDir + "/" + fileName),0D, "File is different");
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
