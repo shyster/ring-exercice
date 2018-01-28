@@ -4,6 +4,7 @@ import com.ring.exercice.curiosity.photos.Photo;
 import com.ring.exercice.curiosity.photos.Photos;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +16,6 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static com.jayway.restassured.RestAssured.given;
@@ -26,7 +26,7 @@ import static org.apache.http.HttpStatus.SC_OK;
  * Created by Vladislav Kulasov on 27.01.2018.
  */
 public class CuriosityPhotos {
-    private Logger logger = Logger.getLogger(this.getClass().getName());
+    private Logger logger = Logger.getLogger(this.getClass());
 
     /**
      * return filtered photos
@@ -90,7 +90,7 @@ public class CuriosityPhotos {
         try {
             downloadPhoto(photo.getImgSrc(), destinationDir);
         } catch (IOException e) {
-            logger.warning("Can't download file " + photo.getImgSrc());
+            logger.error("Can't download file " + photo.getImgSrc());
             throw new RuntimeException(e);
         }
     }

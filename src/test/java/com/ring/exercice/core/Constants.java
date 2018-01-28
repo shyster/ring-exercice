@@ -11,6 +11,6 @@ public class Constants {
     public static final String DOWNLOAD_DIR = "target/";
     public static final String API_EARTH_DATE = "earth_date";
     public static final String CURIOSITY_LANDING_DATE = "2012-08-06T05:17:57";
-    public static final double SOL_DAY = 1.02749125170;
+    public static final float SOL_DAY = 1.02749125170F;
 
 }
