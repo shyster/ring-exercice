@@ -49,7 +49,6 @@ public class TestsCuriosityPhotos {
         curiosityPhotos.downloadPhotos(filteredPhotosEarthDate, DOWNLOAD_DIR + PHOTOS_EARTH_DATE_DIR);
         compareFilesPhotos(limitedPhotos, DOWNLOAD_DIR + PHOTOS_SOL_DIR, DOWNLOAD_DIR + PHOTOS_EARTH_DATE_DIR);
 
-        //        limitedPhotos.get(2).setSol(222);
         Assert.assertEquals(limitedPhotos, filteredPhotosEarthDate, "Metadata is incorrect "); //validate metadata from API
     }
 
