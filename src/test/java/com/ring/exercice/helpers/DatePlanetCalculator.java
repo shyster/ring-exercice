@@ -12,7 +12,7 @@ import static com.ring.exercice.core.Constants.SOL_DAY;
  */
 public class DatePlanetCalculator {
 
-    public static Date getEarthDateBySol(long sol) {
+    public static Date getCuriosityEarthDateBySol(long sol) {
         long earthDays = (long) (SOL_DAY * sol);
         LocalDateTime ldt = LocalDateTime.parse(CURIOSITY_LANDING_DATE).plusDays(earthDays);
         return Date.from(ldt.atZone(ZoneOffset.UTC).toInstant());

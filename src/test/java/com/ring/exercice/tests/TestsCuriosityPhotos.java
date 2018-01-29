@@ -37,7 +37,7 @@ public class TestsCuriosityPhotos {
         //get photos information by sol
         photosSol = photosHelper.getMetadataPhotosFromNasa(photosHelper.getApiUrl(SOL, rover));
         //get photos information by earth date
-        Photos photosEarthDate = photosHelper.getMetadataPhotosFromNasa(photosHelper.getApiUrl(DatePlanetCalculator.getEarthDateBySol(SOL), rover));
+        Photos photosEarthDate = photosHelper.getMetadataPhotosFromNasa(photosHelper.getApiUrl(DatePlanetCalculator.getCuriosityEarthDateBySol(SOL), rover));
         limitedPhotos = photosHelper.getLimitedPhotos(photosSol, PHOTOS_LIMIT);
         filteredPhotosEarthDate = photosHelper.getFilteredPhotos(photosEarthDate, limitedPhotos);
     }
