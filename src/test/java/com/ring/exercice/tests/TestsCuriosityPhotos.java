@@ -29,23 +29,24 @@ public class TestsCuriosityPhotos {
     private static final String PHOTOS_EARTH_DATE_DIR = DOWNLOAD_DIR + "photos/earthDate";
     private Logger logger = Logger.getLogger(this.getClass());
     private PhotosHelper photosHelper = new PhotosHelper();
+    private RestClient photoDowloader = new RestClient();
     List<Photo> limitedPhotos, filteredPhotosEarthDate;
     private Photos photosSol;
 
     @BeforeClass
     public void getPhotosFromNasaApi() {
         //get photos information by sol
-        photosSol = photosHelper.getMetadataPhotosFromNasa(photosHelper.getApiUrl(SOL, rover));
+        photosSol = photoDowloader.getMetadataPhotosFromNasa(photoDowloader.getApiUrl(SOL, rover));
         //get photos information by earth date
-        Photos photosEarthDate = photosHelper.getMetadataPhotosFromNasa(photosHelper.getApiUrl(DatePlanetCalculator.getCuriosityEarthDateBySol(SOL), rover));
+        Photos photosEarthDate = photoDowloader.getMetadataPhotosFromNasa(photoDowloader.getApiUrl(DatePlanetCalculator.getCuriosityEarthDateBySol(SOL), rover));
         limitedPhotos = photosHelper.getLimitedPhotos(photosSol, PHOTOS_LIMIT);
         filteredPhotosEarthDate = photosHelper.getFilteredPhotos(photosEarthDate, limitedPhotos);
     }
 
     @Test
     public void testCompareHasaPhotos() {
-        photosHelper.downloadPhotos(limitedPhotos, PHOTOS_SOL_DIR);
-        photosHelper.downloadPhotos(filteredPhotosEarthDate, PHOTOS_EARTH_DATE_DIR);
+        photoDowloader.downloadPhotos(limitedPhotos, PHOTOS_SOL_DIR);
+        photoDowloader.downloadPhotos(filteredPhotosEarthDate, PHOTOS_EARTH_DATE_DIR);
         compareFilesPhotos(limitedPhotos, PHOTOS_SOL_DIR, PHOTOS_EARTH_DATE_DIR);
         Assert.assertEquals(filteredPhotosEarthDate, limitedPhotos, "Metadata is incorrect "); //validate metadata from API
     }
@@ -76,7 +77,7 @@ public class TestsCuriosityPhotos {
         photos
                 .forEach(photo -> {
                     try {
-                        String fileName = photosHelper.getNameFileFromUrl(photo.getImgSrc());
+                        String fileName = photoDowloader.getNameFileFromUrl(photo.getImgSrc());
                         logger.info("Compare " + firstDir + "/" + fileName + " & " +
                                 secondDir + "/" + fileName);
                         Assert.assertEquals(CompareImages.processImage(
