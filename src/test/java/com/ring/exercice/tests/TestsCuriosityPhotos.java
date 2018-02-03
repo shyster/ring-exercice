@@ -1,5 +1,6 @@
 package com.ring.exercice.tests;
 
+import com.ring.exercice.core.UrlUtils;
 import com.ring.exercice.helpers.*;
 import com.ring.exercice.core.CompareImages;
 import com.ring.exercice.curiosity.photos.Photo;
@@ -21,7 +22,6 @@ import static com.ring.exercice.core.Constants.*;
  * Created by Vladislav Kulasov on 27.01.2018.
  */
 public class TestsCuriosityPhotos {
-
     private static final long SOL = 1000;
     private static final int PHOTOS_LIMIT = 10;
     private static final ReferenceRover rover = ReferenceRover.CURIOSITY;
@@ -52,6 +52,11 @@ public class TestsCuriosityPhotos {
     }
 
     @Test
+    public void testCompareHasaPhotosByMd5() {
+        compareFilesPhotosByMd5(limitedPhotos, filteredPhotosEarthDate);
+    }
+
+    @Test
     public void testAddition() {
         List<CameraPhotosAmount> cameraPhotoAmounts = new ArrayList<>();
         for (RoverCameras cameras : RoverCameras.values()) {
@@ -73,11 +78,37 @@ public class TestsCuriosityPhotos {
         }
     }
 
+    private void compareFilesPhotosByMd5(List<Photo> photos1, List<Photo> photos2){
+        photos1
+                .forEach(photo -> {
+                    try {
+                        String md5HexPhoto1 = photoDowloader.getMd5HexPhoto(photo.getImgSrc());
+                        String md5HexPhoto2;
+                        try {
+                            md5HexPhoto2 = photoDowloader.getMd5HexPhoto(photos2.get(photos2.indexOf(photo)).getImgSrc());
+                        } catch (ArrayIndexOutOfBoundsException e){
+                            logger.info(UrlUtils.getNameFileFromUrl(photo.getImgSrc()) +  " not found in " + photos2);
+                            throw new FileNotFoundException(photo.getImgSrc());
+                        }
+
+                        String log = String.format("compare: %s photo1 md5 = %s & photo2 md5 = %s",
+                                UrlUtils.getNameFileFromUrl(photo.getImgSrc()), md5HexPhoto1, md5HexPhoto2);
+
+                        logger.info(log);
+
+                        Assert.assertEquals(md5HexPhoto1, md5HexPhoto2, "Files are not equal " + UrlUtils.getNameFileFromUrl(photo.getImgSrc()));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                });
+    }
+
     private void compareFilesPhotos(List<Photo> photos, String firstDir, String secondDir) {
         photos
                 .forEach(photo -> {
                     try {
-                        String fileName = photoDowloader.getNameFileFromUrl(photo.getImgSrc());
+                        String fileName = UrlUtils.getNameFileFromUrl(photo.getImgSrc());
                         logger.info("Compare " + firstDir + "/" + fileName + " & " +
                                 secondDir + "/" + fileName);
                         Assert.assertEquals(CompareImages.processImage(
@@ -88,5 +119,4 @@ public class TestsCuriosityPhotos {
                     }
                 });
     }
-
 }
