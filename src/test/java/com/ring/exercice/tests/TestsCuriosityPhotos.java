@@ -8,6 +8,8 @@ import com.ring.exercice.curiosity.photos.Photos;
 import org.apache.log4j.Logger;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Optional;
+import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 
@@ -22,8 +24,6 @@ import static com.ring.exercice.core.Constants.*;
  * Created by Vladislav Kulasov on 27.01.2018.
  */
 public class TestsCuriosityPhotos {
-    private static final long SOL = 1000;
-    private static final int PHOTOS_LIMIT = 10;
     private static final ReferenceRover rover = ReferenceRover.CURIOSITY;
     private static final String PHOTOS_SOL_DIR = DOWNLOAD_DIR + "photos/sol";
     private static final String PHOTOS_EARTH_DATE_DIR = DOWNLOAD_DIR + "photos/earthDate";
@@ -33,13 +33,14 @@ public class TestsCuriosityPhotos {
     List<Photo> limitedPhotos, filteredPhotosEarthDate;
     private Photos photosSol;
 
+    @Parameters({"1000", "10"})
     @BeforeClass
-    public void getPhotosFromNasaApi() {
+    public void getPhotosFromNasaApi(@Optional("1000") long sol, @Optional("10") long photosLimit) {
         //get photos information by sol
-        photosSol = photoDowloader.getMetadataPhotosFromNasa(photoDowloader.getApiUrl(SOL, rover));
+        photosSol = photoDowloader.getMetadataPhotosFromNasa(photoDowloader.getApiUrl(sol, rover));
         //get photos information by earth date
-        Photos photosEarthDate = photoDowloader.getMetadataPhotosFromNasa(photoDowloader.getApiUrl(DatePlanetCalculator.getCuriosityEarthDateBySol(SOL), rover));
-        limitedPhotos = photosHelper.getLimitedPhotos(photosSol, PHOTOS_LIMIT);
+        Photos photosEarthDate = photoDowloader.getMetadataPhotosFromNasa(photoDowloader.getApiUrl(DatePlanetCalculator.getCuriosityEarthDateBySol(sol), rover));
+        limitedPhotos = photosHelper.getLimitedPhotos(photosSol, photosLimit);
         filteredPhotosEarthDate = photosHelper.getFilteredPhotos(photosEarthDate, limitedPhotos);
     }
 
